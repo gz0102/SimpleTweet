@@ -47,6 +47,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constrainedWidth="true"
+        android:autoLink="all"
+        android:linksClickable="true"
         tools:text="This is a really really really really really really long sample tweet" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
