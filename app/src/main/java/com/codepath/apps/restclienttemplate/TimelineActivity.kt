@@ -1,8 +1,12 @@
 package com.codepath.apps.restclienttemplate
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -53,6 +57,42 @@ class TimelineActivity : AppCompatActivity() {
         populateHomeTimeline()
     }
 
+    //inflate the menu
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    //handle clicks on menu item
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+       if(item.itemId == R.id.compose){
+           // Navigate to compose screen
+           val intent  = Intent(this,ComposeActivity::class.java)
+           startActivityForResult(intent, REQUEST_CODE)
+       }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    // this method is called when we come back from ComposeActivity
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        if(resultCode == RESULT_OK && requestCode == REQUEST_CODE){
+
+            //Get data from our intent (tweet composed)
+            val tweet = data?.getParcelableExtra("tweet") as Tweet
+
+            //update timeLine
+            tweets.add(0,tweet)
+
+            //update adapter
+            adapter.notifyItemInserted(0)
+            rvTweets.smoothScrollToPosition(0)
+        }
+
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     fun populateHomeTimeline(){
         client.getHomeTimeline(object : JsonHttpResponseHandler(){
 
@@ -90,5 +130,6 @@ class TimelineActivity : AppCompatActivity() {
 
     companion object{
         val TAG = "TimelineActivity"
+        val REQUEST_CODE = 10
     }
 }
